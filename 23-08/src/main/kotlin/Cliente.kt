@@ -2,7 +2,7 @@ class Cliente (
     var nome: String,
     var endereco: String,
     var telefone: String
-        ) {
+) {
 
     private val listaCompras = mutableListOf<String>()
 
@@ -43,10 +43,10 @@ class Cliente (
     }
 
 
-            fun getListaCompras() {
-                println()
-                println(listaCompras)
-            }
+    fun getListaCompras() {
+        println()
+        println(listaCompras)
+    }
 
 
 }
