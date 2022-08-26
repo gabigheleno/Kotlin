@@ -1,5 +1,5 @@
 import Cadastro
-import CadastroEstabeleciment
+import CadastroEstabelecimento
 import CadastroMedico
 import CadastroUsuario
 
@@ -11,11 +11,11 @@ fun main(args: Array<String>) {
         try{
             while (true){
                 println("(1) - Cadastrar...")
-                println("(2) - Listar Usuarios")
+                println("(2) - Listar Usuários")
                 println("(3) - Listar Postagens")
-                println("(4) - Criar postagem")
-                println("(5) - Deletar postagem")
-                println("(6) - Adicionar Comentario")
+                println("(4) - Criar Postagem")
+                println("(5) - Deletar Postagem")
+                println("(6) - Adicionar Comentário")
                 println("(0) - Sair")
                 print("Digite: ")
 
@@ -34,7 +34,7 @@ fun main(args: Array<String>) {
                         println(CadastroMedico.listarPostagens())
                     }
                     4 -> {
-                        println("Criando postagens!")
+                        println("Criando postagens...")
                         criandoPosts()
                     }
                     5 -> {
@@ -42,7 +42,7 @@ fun main(args: Array<String>) {
                         deletaPostagens()
                     }
                     6 -> {
-                        println("Adicionando comentarios!")
+                        println("Adicionando comentários...")
                         addComentario()
                     }
                     0 -> {
@@ -50,7 +50,7 @@ fun main(args: Array<String>) {
                         break
                     }
                     else -> {
-                        println("Opção Inválida!")
+                        println("Opção inválida!")
                     }
                 }
 
@@ -68,10 +68,10 @@ fun addComentario() {
 
     for(cadastro in listaCadastros){
         if(cadastro.pegaNome() == nome && cadastro is CadastroUsuario){
-            print("Informe o comentario: ")
+            print("Insira o comentário: ")
             val comentario = readln()
 
-            print("Informe o id do post que quer comentar: ")
+            print("Informe o ID do post que quer comentar: ")
             val id = readln().toInt()
             cadastro.adicionarComentario(id,comentario)
         }
@@ -79,37 +79,36 @@ fun addComentario() {
 }
 
 fun deletaPostagens() {
-    print("Digite o nome do responsavel por este post: ")
+    print("Digite o nome do responsável por este post: ")
     val resp = readln()
 
-    for(cadastro in listaCadastros){
-        if(cadastro.pegaNome() == resp && cadastro is CadastroMedico){
+    try {
+        for (cadastro in listaCadastros) {
+            if (cadastro.pegaNome() == resp && cadastro is CadastroMedico) {
 
-            print("Digite o id do post que será deletado: ")
-            val id = readln().toInt()
+                print("Digite o ID do post que será deletado: ")
+                val id = readln().toInt()
 
-            if(CadastroMedico.postagens.get(id).contains(resp)){
-                cadastro.deletarPostagem(id)
-                break
+                if (CadastroMedico.postagens[id].contains(resp)) {
+                    cadastro.deletarPostagem(id)
+                } else {
+                    println("Post não pertence a este médico!")
+                }
+
+            } else if (cadastro.pegaNome() == resp && cadastro is CadastroEstabelecimento) {
+                print("Digite o ID do post que será deletado: ")
+                val id = readln().toInt()
+
+                if (CadastroMedico.postagens[id].contains(resp)) {
+                    cadastro.deletarPostagem(id)
+                }
+            } else {
+                println("\nNão existe nenhum post realizado por $resp!\n")
             }
-
-            println("Post não pertence a este médico!")
-            break
-
-        } else if(cadastro.pegaNome() == resp && cadastro is CadastroEstabeleciment){
-            print("Digite o id do post que será deletado: ")
-            val id = readln().toInt()
-
-            if(CadastroMedico.postagens.get(id).contains(resp)){
-                cadastro.deletarPostagem(id)
-                break
-            }
-
-            println("Post não pertence ao seu estabelecimento!")
-            break
         }
+    } catch (e: Exception) {
+        throw IllegalArgumentException("\nNão existe nenhum post com esse ID!\n")
     }
-
 }
 
 fun cadastroUsuario(){
@@ -126,27 +125,27 @@ fun cadastroUsuario(){
     val opcao = readln().toInt()
 
     if(opcao == 1){
-        print("informe o cpf: ")
+        print("Informe o CPF: ")
         val cpf = readln()
         val cadastro = CadastroUsuario(nome, login, senha, telefone, cpf)
         listaCadastros.add(cadastro)
     }
     else if(opcao == 2){
-        print("informe o cpf: ")
+        print("Informe o CPF: ")
         val cpf = readln()
-        print("informe o crm: ")
+        print("Informe o CRM: ")
         val crm = readln()
         val cadastro = CadastroMedico(nome, login, senha, telefone, cpf, crm)
         listaCadastros.add(cadastro)
     }
     else if(opcao == 3){
-        print("informe o cnpj: ")
+        print("Informe o CNPJ: ")
         val cnpj = readln()
-        val cadastro = CadastroEstabeleciment(nome, login, senha, telefone, cnpj)
+        val cadastro = CadastroEstabelecimento(nome, login, senha, telefone, cnpj)
         listaCadastros.add(cadastro)
     }
     else {
-        println("Opção Invalida!")
+        println("Opção inválida!")
     }
 }
 
@@ -156,14 +155,14 @@ fun criandoPosts(){
 
     for(cadastro in listaCadastros){
         if( cadastro.pegaNome() == nome && cadastro is CadastroMedico){
-            println("Olá doutor(a) ${cadastro.pegaNome()}")
+            println("Olá, doutor(a) ${cadastro.pegaNome()}")
             print("Insira sua postagem: ")
             val post = readln()
             cadastro.criarPostagem(post)
             break
         }
-        else if( cadastro.pegaNome() == nome && cadastro is CadastroEstabeleciment){
-            println("Olá estabelecimento ${cadastro.pegaNome()}")
+        else if( cadastro.pegaNome() == nome && cadastro is CadastroEstabelecimento){
+            println("Olá, estabelecimento ${cadastro.pegaNome()}")
             print("Insira sua postagem: ")
             val post = readln()
             cadastro.criarPostagem(post)

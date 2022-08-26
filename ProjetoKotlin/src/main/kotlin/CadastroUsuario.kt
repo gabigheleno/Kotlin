@@ -6,34 +6,46 @@ class CadastroUsuario(
     val cpf: String
 ) : Cadastro(nome, login, senha, telefone) {
 
+    companion object{
+        val cpfsCadastrados = mutableSetOf<String>()
+    }
+
     init{
         if(cpf.length == 11){
-            println("Usuario $nome cadastrado com sucesso")
+            if(cpf !in cpfsCadastrados){
+                println("Usuário $nome cadastrado com sucesso")
+                cpfsCadastrados.add(cpf)
+            }
+            else{
+                throw IllegalArgumentException ("CPF já cadastrado")
+            }
         } else {
-            throw IllegalArgumentException ("CPF Inválido!")
+            throw IllegalArgumentException ("CPF inválido!")
         }
 
     }
 
     override fun toString(): String {
-        return "Usuário: $nome, Cpf $cpf"
+        return "Usuário: $nome, CPF $cpf"
     }
 
 
-    fun adicionarComentario (id:Int, comentario:String){
+    fun adicionarComentario (id:Int, comentario:String):String{
         try{
             for(post in 0..CadastroMedico.postagens.size){
-                if(post == id){
+                if(post == id-1){
 
                     var postmodificado = CadastroMedico.postagens.get(post)
                     CadastroMedico.postagens.removeAt(post)
 
-                    postmodificado += "\ncomentario: $comentario - autor: $nome"
+                    postmodificado += "\ncomentário: $comentario - autor: $nome"
                     CadastroMedico.postagens.add(postmodificado)
-                    return
+                    return "Comentário de $nome adicionado com sucesso!"
                 }
-            }}catch (e: Exception){
-            throw Exception ("Id do post não encontrado nas postagens")
+            }
+            return ""
+        }catch (e: Exception){
+            throw Exception ("ID do post não encontrado nas postagens")
         }
     }
 

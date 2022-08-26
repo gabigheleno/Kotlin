@@ -1,4 +1,4 @@
-class CadastroEstabeleciment(
+class CadastroEstabelecimento(
     nome: String,
     login: String,
     senha: String,
@@ -6,32 +6,41 @@ class CadastroEstabeleciment(
     private val cnpj: String
 ) : Cadastro(nome, login, senha, telefone) {
 
+    companion object{
+        val cnpjsCadastrados = mutableSetOf<String>()
+    }
+
     init{
         if(cnpj.length == 14){
-            println("Estabelecimento $nome cadastrado com sucesso")
+            if(cnpj !in cnpjsCadastrados){
+                println("Estabelecimento $nome cadastrado com sucesso!")
+                cnpjsCadastrados.add(cnpj)
+            } else{
+                throw IllegalArgumentException ("CNPJ já Cadastrado no sistema!")
+            }
         } else {
-            throw IllegalArgumentException ("CNPJ InvÃ¡lido!")
+            throw IllegalArgumentException ("CNPJ inválido!")
         }
 
     }
 
-    fun criarPostagem(post: String){
+    fun criarPostagem(post: String):String{
         var postagem = "Estabelecimento $nome postou:\n"
         postagem += post
         if(post.isNotBlank()){
 
             CadastroMedico.postagens.add(postagem)
-            return
+            return "Post de $nome criado com sucesso!"
         }
-        println("O post nao pode estar em branco")
+        return "O post não pode estar em branco."
     }
 
-    fun deletarPostagem(postDeletado: Int){
+    fun deletarPostagem(postDeletado: Int):String{
         if(CadastroMedico.postagens.contains(CadastroMedico.postagens.get(postDeletado))){
             CadastroMedico.postagens.removeAt(postDeletado)
-            return
+            return "Post id $postDeletado deletado com sucesso"
         }
-        println("O $postDeletado nao existe")
+        return "O Post id $postDeletado não existe."
     }
 
     /*

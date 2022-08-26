@@ -9,19 +9,32 @@ class CadastroMedico(
 
     init{
         if(cpf.length == 11 && crm.length == 8){
-            println("Medico $nome cadastrado com sucesso")
+            if(cpf !in CadastroUsuario.cpfsCadastrados && crm !in crmMedicosCadastrados){
+                println("Médico(a) $nome cadastrado com sucesso")
+                CadastroUsuario.cpfsCadastrados.add(cpf)
+                crmMedicosCadastrados.add(crm)
+            } else if(cpf !in CadastroUsuario.cpfsCadastrados && crm in crmMedicosCadastrados){
+                throw IllegalArgumentException ("Cadastro inválido! - CRM já no sistema")
+            }else if(cpf in CadastroUsuario.cpfsCadastrados && crm !in crmMedicosCadastrados){
+                throw IllegalArgumentException ("Cadastro inválido! - CPF já no sistema")
+            } else{
+                throw IllegalArgumentException ("Cadastro inválido! - CPF e CRM já no sistema")
+            }
+
         } else {
-            throw IllegalArgumentException ("Cadastro Inválido!")
+            throw IllegalArgumentException ("Cadastro inválido!")
         }
 
     }
 
     companion object{
+
         val postagens = mutableListOf<String>()
+        private val crmMedicosCadastrados = mutableSetOf<String>()
 
         fun listarPostagens():String{
             var posts = ""
-            var id = 0
+            var id = 1
             for(postagem in postagens){
                 posts += "id: ${id} - "+ postagem + "\n"
                 id++
@@ -30,22 +43,24 @@ class CadastroMedico(
         }
     }
 
-    fun criarPostagem(post: String){
-        var postagem = "Médico $nome postou:\n"
+    fun criarPostagem(post: String):String{
+        var postagem = "Médico(a) $nome postou:\n"
         postagem += post
         if(post.isNotBlank()){
             postagens.add(postagem)
-            return
+            return "Post de $nome Criado com sucesso"
         }
-        println("O post nao pode estar em branco")
+        return "O post não pode estar em branco."
     }
 
-    fun deletarPostagem(postDeletado: Int){
-        if(CadastroMedico.postagens.contains(CadastroMedico.postagens.get(postDeletado))){
-            CadastroMedico.postagens.removeAt(postDeletado)
-            return
+    fun deletarPostagem(postDeletado: Int): String?{
+
+        if(postagens.contains(postagens.get(postDeletado))){
+
+            postagens.removeAt(postDeletado)
+            return "Post deletado com sucesso!"
         }
-        println("O $postDeletado nao existe")
+        return ""
     }
 
     /*
@@ -65,7 +80,7 @@ class CadastroMedico(
     */
 
     override fun toString(): String {
-        var retorno = "Médico: $nome, Crm: $crm "
+        var retorno = "Médico(a): $nome, CRM: $crm "
 
         return retorno
     }
