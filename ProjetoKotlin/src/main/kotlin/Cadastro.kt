@@ -5,8 +5,7 @@ abstract class Cadastro(
     protected var telefone: String
 ) {
 
-    fun pegaNome():String{
+    fun pegaNome(): String {
         return nome
     }
-
 }

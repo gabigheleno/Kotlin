@@ -3,50 +3,36 @@ class CadastroUsuario(
     login: String,
     senha: String,
     telefone: String,
-    val cpf: String
+    private val cpf: String
 ) : Cadastro(nome, login, senha, telefone) {
 
-    companion object{
-        val cpfsCadastrados = mutableSetOf<String>()
-    }
-
-    init{
-        if(cpf.length == 11){
-            if(cpf !in cpfsCadastrados){
-                println("Usuário $nome cadastrado com sucesso")
-                cpfsCadastrados.add(cpf)
-            }
-            else{
-                throw IllegalArgumentException ("CPF já cadastrado")
-            }
+    init {
+        if (cpf.length == 11) {
+            println("\nUsuário $nome cadastrado com sucesso!\n")
         } else {
-            throw IllegalArgumentException ("CPF inválido!")
+            throw IllegalArgumentException("\nO CPF deve conter exatamente 11 números!\n")
         }
-
     }
 
     override fun toString(): String {
-        return "Usuário: $nome, CPF $cpf"
+        return "Usuário: $nome, CPF: $cpf"
     }
 
+    fun adicionarComentario(id: Int, comentario: String) {
+        try {
+            for (post in 0..CadastroMedico.postagens.size) {
+                if (post == id) {
 
-    fun adicionarComentario (id:Int, comentario:String):String{
-        try{
-            for(post in 0..CadastroMedico.postagens.size){
-                if(post == id-1){
-
-                    var postmodificado = CadastroMedico.postagens.get(post)
+                    var postmodificado = CadastroMedico.postagens[post]
                     CadastroMedico.postagens.removeAt(post)
 
-                    postmodificado += "\ncomentário: $comentario - autor: $nome"
+                    postmodificado += "\nComentários: $comentario - Autor(a): $nome"
                     CadastroMedico.postagens.add(postmodificado)
-                    return "Comentário de $nome adicionado com sucesso!"
+                    return
                 }
             }
-            return ""
-        }catch (e: Exception){
-            throw Exception ("ID do post não encontrado nas postagens")
+        } catch (e: IllegalArgumentException) {
+            throw IllegalArgumentException("ID do post não encontrado nas postagens!")
         }
     }
-
 }

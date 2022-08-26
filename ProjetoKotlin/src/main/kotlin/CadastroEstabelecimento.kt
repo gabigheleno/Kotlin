@@ -6,41 +6,30 @@ class CadastroEstabelecimento(
     private val cnpj: String
 ) : Cadastro(nome, login, senha, telefone) {
 
-    companion object{
-        val cnpjsCadastrados = mutableSetOf<String>()
-    }
-
-    init{
-        if(cnpj.length == 14){
-            if(cnpj !in cnpjsCadastrados){
-                println("Estabelecimento $nome cadastrado com sucesso!")
-                cnpjsCadastrados.add(cnpj)
-            } else{
-                throw IllegalArgumentException ("CNPJ já Cadastrado no sistema!")
-            }
+    init {
+        if (cnpj.length == 14) {
+            println("\nEstabelecimento $nome cadastrado com sucesso!\n")
         } else {
-            throw IllegalArgumentException ("CNPJ inválido!")
+            throw IllegalArgumentException("\nO CNPJ deve conter exatamente 14 números!\n")
         }
-
     }
 
-    fun criarPostagem(post: String):String{
+    fun criarPostagem(post: String) {
         var postagem = "Estabelecimento $nome postou:\n"
         postagem += post
-        if(post.isNotBlank()){
-
+        if (post.isNotBlank()) {
             CadastroMedico.postagens.add(postagem)
-            return "Post de $nome criado com sucesso!"
+            return
         }
-        return "O post não pode estar em branco."
+        println("O post não pode estar em branco!")
     }
 
-    fun deletarPostagem(postDeletado: Int):String{
-        if(CadastroMedico.postagens.contains(CadastroMedico.postagens.get(postDeletado))){
+    fun deletarPostagem(postDeletado: Int) {
+        if (CadastroMedico.postagens.contains(CadastroMedico.postagens[postDeletado])) {
             CadastroMedico.postagens.removeAt(postDeletado)
-            return "Post id $postDeletado deletado com sucesso"
+            return
         }
-        return "O Post id $postDeletado não existe."
+        println("O $postDeletado não existe")
     }
 
     /*
@@ -58,8 +47,6 @@ class CadastroEstabelecimento(
     */
 
     override fun toString(): String {
-        var retorno = "Estabelecimento: $nome, CNPJ: $cnpj "
-        return retorno
+        return "Estabelecimento: $nome, CNPJ: $cnpj "
     }
-
 }

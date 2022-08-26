@@ -5,58 +5,54 @@ import CadastroUsuario
 
 val listaCadastros = mutableListOf<Cadastro>()
 
-fun main(args: Array<String>) {
+fun main() {
 
-    while(true){
-        try{
-            while (true){
-                println("(1) - Cadastrar...")
-                println("(2) - Listar Usuários")
-                println("(3) - Listar Postagens")
-                println("(4) - Criar Postagem")
-                println("(5) - Deletar Postagem")
-                println("(6) - Adicionar Comentário")
+    while (true) {
+        try {
+            while (true) {
+                println("(1) - Cadastrar usuário")
+                println("(2) - Listar usuários")
+                println("(3) - Listar postagens")
+                println("(4) - Criar postagem")
+                println("(5) - Deletar postagem")
+                println("(6) - Adicionar comentário")
                 println("(0) - Sair")
-                print("Digite: ")
+                print("Selecione uma opção: ")
 
-                when(readln().toInt()){
-                    1 -> {
-                        cadastroUsuario()
-                    }
-                    2 -> {
-                        println("Listando Cadastros...")
-                        listaCadastros.forEach{ cadastro ->
+                when (readln()) {
+                    "1" -> cadastroUsuario()
+                    "2" -> {
+                        println("\nListando Cadastros...")
+                        listaCadastros.forEach { cadastro ->
+                            println()
                             println(cadastro)
                         }
                     }
-                    3 -> {
-                        println("Listando Postagens...")
+                    "3" -> {
+                        println("\nListando Postagens...")
                         println(CadastroMedico.listarPostagens())
                     }
-                    4 -> {
-                        println("Criando postagens...")
+                    "4" -> {
+                        println("Criando postagens!")
                         criandoPosts()
                     }
-                    5 -> {
-                        println("Deletando posts...")
+                    "5" -> {
+                        println("Deletando postagens...")
                         deletaPostagens()
                     }
-                    6 -> {
-                        println("Adicionando comentários...")
+                    "6" -> {
+                        println("Adicionando comentários!")
                         addComentario()
                     }
-                    0 -> {
+                    "0" -> {
                         println("Obrigado por utilizar!")
                         break
                     }
-                    else -> {
-                        println("Opção inválida!")
-                    }
+                    else -> println("Opção Inválida!")
                 }
-
             }
             break
-        }catch (e: Exception){
+        } catch (e: IllegalArgumentException) {
             println(e.message)
         }
     }
@@ -66,14 +62,16 @@ fun addComentario() {
     print("Insira o nome de quem irá comentar: ")
     val nome = readln()
 
-    for(cadastro in listaCadastros){
-        if(cadastro.pegaNome() == nome && cadastro is CadastroUsuario){
-            print("Insira o comentário: ")
+    for (cadastro in listaCadastros) {
+        if (cadastro.pegaNome() == nome && cadastro is CadastroUsuario) {
+            print("Informe o comentário: ")
             val comentario = readln()
 
-            print("Informe o ID do post que quer comentar: ")
+            print("Informe o id do post que quer comentar: ")
             val id = readln().toInt()
-            cadastro.adicionarComentario(id,comentario)
+            cadastro.adicionarComentario(id, comentario)
+        } else {
+            println("Usuário não encontrado!")
         }
     }
 }
@@ -111,62 +109,74 @@ fun deletaPostagens() {
     }
 }
 
-fun cadastroUsuario(){
+fun cadastroUsuario() {
+
+    println()
     print("Informe o nome: ")
-    val nome = readln()
+    val nome = lerDados()
+
     print("Informe o login: ")
-    val login = readln()
+    val login = lerDados()
+
     print("Informe o senha: ")
-    val senha = readln()
+    val senha = lerDados()
+
     print("Informe o telefone: ")
-    val telefone = readln()
+    val telefone = lerDados()
 
     println("Informe o tipo de cadastro: (1) Paciente (2) Medico (3) Estabelecimento")
-    val opcao = readln().toInt()
 
-    if(opcao == 1){
-        print("Informe o CPF: ")
-        val cpf = readln()
-        val cadastro = CadastroUsuario(nome, login, senha, telefone, cpf)
-        listaCadastros.add(cadastro)
-    }
-    else if(opcao == 2){
-        print("Informe o CPF: ")
-        val cpf = readln()
-        print("Informe o CRM: ")
-        val crm = readln()
-        val cadastro = CadastroMedico(nome, login, senha, telefone, cpf, crm)
-        listaCadastros.add(cadastro)
-    }
-    else if(opcao == 3){
-        print("Informe o CNPJ: ")
-        val cnpj = readln()
-        val cadastro = CadastroEstabelecimento(nome, login, senha, telefone, cnpj)
-        listaCadastros.add(cadastro)
-    }
-    else {
-        println("Opção inválida!")
+    when (readln()) {
+        "1" -> {
+            print("Informe o CPF: ")
+            val cpf = readln()
+            val cadastro = CadastroUsuario(nome, login, senha, telefone, cpf)
+            listaCadastros.add(cadastro)
+        }
+        "2" -> {
+            print("Informe o CPF: ")
+            val cpf = readln()
+            print("Informe o CRM: ")
+            val crm = readln()
+            val cadastro = CadastroMedico(nome, login, senha, telefone, cpf, crm)
+            listaCadastros.add(cadastro)
+        }
+        "3" -> {
+            print("Informe o CNPJ: ")
+            val cnpj = readln()
+            val cadastro = CadastroEstabelecimento(nome, login, senha, telefone, cnpj)
+            listaCadastros.add(cadastro)
+        }
+        else -> println("Opção inválida!")
     }
 }
 
-fun criandoPosts(){
-    print("Informe seu nome: ")
+fun criandoPosts() {
+    print("Informe o seu nome: ")
     val nome = readln()
 
-    for(cadastro in listaCadastros){
-        if( cadastro.pegaNome() == nome && cadastro is CadastroMedico){
-            println("Olá, doutor(a) ${cadastro.pegaNome()}")
+    for (cadastro in listaCadastros) {
+        if (cadastro.pegaNome() == nome && cadastro is CadastroMedico) {
+            println("Olá doutor(a) ${cadastro.pegaNome()}")
             print("Insira sua postagem: ")
             val post = readln()
             cadastro.criarPostagem(post)
-            break
-        }
-        else if( cadastro.pegaNome() == nome && cadastro is CadastroEstabelecimento){
-            println("Olá, estabelecimento ${cadastro.pegaNome()}")
+        } else if (cadastro.pegaNome() == nome && cadastro is CadastroEstabelecimento) {
+            println("Olá estabelecimento ${cadastro.pegaNome()}")
             print("Insira sua postagem: ")
             val post = readln()
             cadastro.criarPostagem(post)
-            break
+        } else {
+            println("Dados não encontrados!")
         }
     }
+}
+
+fun lerDados(): String {
+    val dadoLido = readln()
+
+    if (dadoLido.isBlank())
+        throw IllegalArgumentException("\nNenhum dos dados pode estar em branco!\n")
+
+    return dadoLido
 }
